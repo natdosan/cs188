@@ -148,7 +148,8 @@ def uniformCostSearch(problem: SearchProblem):
     "*** YOUR CODE HERE ***"
     start_state = problem.getStartState()
     priority_queue = util.PriorityQueue()
-    priority_queue.push((start_state, [])) # (state, actions)
+    # (state, actions), 0 initial cost
+    priority_queue.push((start_state, []), 0) 
 
     # we keep a set so we avoid duplications
     visited = set()

@@ -36,6 +36,12 @@ def buyLotsOfFruit(orderList):
     """
     totalCost = 0.0
     "*** YOUR CODE HERE ***"
+    for pair in orderList:
+        if pair[0] not in fruitPrices.keys():
+            print('Error')
+            return None
+        else:
+            totalCost += pair[1] * fruitPrices[pair[0]]
     return totalCost
 
 

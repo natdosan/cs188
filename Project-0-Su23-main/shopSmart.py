@@ -30,8 +30,18 @@ def shopSmart(orderList, fruitShops):
         fruitShops: List of FruitShops
     """
     "*** YOUR CODE HERE ***"
-    return None
+    lowest_cost_shop = 0
+    min_cost = float('inf')
 
+    # iterate through each shop and see if the total cost is better than our
+    # current estimate (like Bellman Ford?)
+    for shop in fruitShops:
+        total_cost = shop.getPriceOfOrder(orderList)
+        if total_cost < min_cost:
+            # update operation
+            min_cost = total_cost
+            lowest_cost_shop = shop
+    return lowest_cost_shop
 
 if __name__ == '__main__':
     "This code runs when you invoke the script from the command line"

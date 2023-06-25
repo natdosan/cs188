@@ -396,8 +396,9 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
 
     # the Manhattan distances to all unvisited corners
     MH_distances = []
-    for corner in corners:
-        distance = util.manhattanDistance(currentPosition, corner)
+    for pair in corners:
+        # keep track of all MH
+        distance = util.manhattanDistance(currentPosition, pair)
         MH_distances.append(distance)
         heuristic_val = max(MH_distances)
 

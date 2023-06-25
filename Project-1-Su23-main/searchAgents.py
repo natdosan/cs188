@@ -296,14 +296,20 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # returns a tuple of the starting position and the corners representing
+        # our start state space
+        start_state = self.startingPosition, self.corners
+        return start_state
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        currentPosition, corners = state
+        # goal state == all corners visited
+        # if none left, we claim vicotry!
+        return len(corners) == 0
 
     def getSuccessors(self, state: Any):
         """
@@ -316,7 +322,9 @@ class CornersProblem(search.SearchProblem):
             is the incremental cost of expanding to that successor
         """
 
+        # successors is a list of (state, action, cost)
         successors = []
+        currentPosition, corners = state
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -326,6 +334,25 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            print('Position : Corners :', currentPosition, corners)
+            x, y = currentPosition
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            
+            # as long as we are not hitting any walls and not at corners
+            #for next_corner in corners:
+            if not hitsWall:
+                next_position = (nextx, nexty)
+                next_corners = list(corners)
+                # if we go to a coord of one of the corners
+                if next_position in next_corners:
+                    # we visit it (remove the node)
+                    next_corners.remove(next_position)
+                next_state = (next_position, tuple(next_corners))
+                cost = 1
+                # add our action to our path
+                successors.append((next_state, action, cost))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors

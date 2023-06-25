@@ -96,7 +96,7 @@ def depthFirstSearch(problem: SearchProblem):
     while not stack.isEmpty():
         # get node from top of stack
         state, actions = stack.pop()
-        # if valid goal state
+        # if valid goal state return the path
         if problem.isGoalState(state):
             return actions
         # avoid expanding already visited states
@@ -126,7 +126,7 @@ def breadthFirstSearch(problem: SearchProblem):
     while not queue.isEmpty():
         # get node from top of stack
         state, actions = queue.pop()
-        # if valid goal state
+        # if valid goal state return the path
         if problem.isGoalState(state):
             return actions
         # avoid expanding already visited states
@@ -156,7 +156,7 @@ def uniformCostSearch(problem: SearchProblem):
     while not priority_queue.isEmpty():
         # get node from top of stack
         state, actions = priority_queue.pop()
-        # if valid goal state
+        # if valid goal state return the path
         if problem.isGoalState(state):
             return actions
         # avoid expanding already visited states

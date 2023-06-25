@@ -497,7 +497,27 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    
+    # all uneaten food
+    pellets_left = foodGrid.asList()
+    heuristic_val = float('inf')
+
+    # trivial case
+    if len(pellets_left) == 0:
+        heuristic_val = 0
+        return heuristic_val
+
+    def h(pellets_left, position):
+        # Djikstras sort of algorithm
+        distance = 0
+        for coord in pellets_left:
+            # update with better distances
+            distance = max(distance, mazeDistance(coord, position, problem.startingGameState))
+        return distance
+
+    heuristic_val = h(pellets_left, position)
+    print(heuristic_val)
+    return heuristic_val
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -564,7 +584,11 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        currentPosition, corners = state
+        # goal state == all corners visited
+        # if none left, we claim vicotry!
+        return len(corners) == 0
+
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
     """

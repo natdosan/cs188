@@ -334,7 +334,7 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            print('Position : Corners :', currentPosition, corners)
+            #print('Position : Corners :', currentPosition, corners)
             x, y = currentPosition
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
@@ -516,7 +516,7 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
         return distance
 
     heuristic_val = h(pellets_left, position)
-    print(heuristic_val)
+    #print(heuristic_val)
     return heuristic_val
 
 class ClosestDotSearchAgent(SearchAgent):
@@ -586,7 +586,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         "*** YOUR CODE HERE ***"
         # goal state == all corners visited
         # if none left, we claim vicotry!
-        return self.food[x][y]
+        food_pos = self.food.asList()
+        return (x, y) in food_pos
 
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:

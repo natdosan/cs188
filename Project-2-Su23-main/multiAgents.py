@@ -140,6 +140,34 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
     Your minimax agent (question 2)
     """
+    # code from lectures
+    def max_value(self, gameState, depth, agentIndex):
+        """
+        Given a state, keeps iterating and increasing until the 
+        maximum value is found -> V(s) = max V(s’) for all s’ successors of s
+        """
+        if gameState.isWin() or gameState.isLose() or depth == self.depth:
+            return self.evaluationFunction(gameState)
+
+        v = float('-inf')
+        for action in gameState.getLegalActions(agentIndex):
+            successor = gameState.generateSuccessor(agentIndex, action)
+            v = max(v, self.min_value(successor, depth, agentIndex + 1))
+        return v
+
+    def min_value(self, gameState, depth, agentIndex):
+        """
+        Given a state, keeps iterating and increasing until the 
+        minimum value is found -> V(s') = min V(s) for all s successors of s’
+        """
+        if gameState.isWin() or gameState.isLose() or depth == self.depth:
+            return self.evaluationFunction(gameState)
+            
+        v = float('inf')
+        for action in gameState.getLegalActions(agentIndex):
+            successor = gameState.generateSuccessor(agentIndex, action)
+            v = min(v, self.max_value(successor, depth + 1, 0) if agentIndex == gameState.getNumAgents() - 1 else self.min_value(successor, depth, agentIndex + 1))
+        return v
 
     def getAction(self, gameState: GameState):
         """
@@ -165,7 +193,22 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #agentIndex = 0
+        #legal_actions = gameState.getLegalActions(agentIndex)
+        #successor_gamestate = gameState.generateSuccessor(agentIndex, action)
+        #total_agents = gameState.getNumAgents()
+        is_winning_state = gameState.isWin()
+        is_losing_state = gameState.isLose()
+
+        # base case: win or lose
+        if is_winning_state or is_losing_state:
+            return self.evaluationFunction(gameState)
+
+        pacmans_actions = gameState.getLegalActions(0)
+        return max(pacmans_actions, key=lambda action: 
+                self.min_value(gameState.generateSuccessor(0, action), 0, 1))
+
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """

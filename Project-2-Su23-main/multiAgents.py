@@ -265,11 +265,13 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             # only called once for each action
             successor = gameState.generateSuccessor(0, action)
             temp = self.min_value(successor, 0, 1, alpha, beta)
+            # update thresholds
             if temp > v:
                 v = temp
                 best_action = action
             if v > beta:
                 return action
+            # maximizer
             alpha = max(alpha, v)
         return best_action
 

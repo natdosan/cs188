@@ -70,12 +70,41 @@ class ReflexAgent(Agent):
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
         newPos = successorGameState.getPacmanPosition()
-        newFood = successorGameState.getFood()
+        newFood = successorGameState.getFood().asList()
         newGhostStates = successorGameState.getGhostStates()
+        newGhostPos = [manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates]
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
-        "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        #print(successorGameState)
+        #print(newPos)
+        #print(newFood)
+        #print(newGhostStates)
+        #print(newScaredTimes)
+
+        # manhattan dist to closest food, ghost
+        #distance_over_food = manhattanDistance(newPos, successorGameState) / newFood
+        if newFood:
+            min_MH = min(manhattanDistance(newPos, food) for food in newFood)
+        else:
+            min_MH = 0  # No food left
+        min_ghost_MH = min(newGhostPos) if newGhostPos else float('inf')
+
+        is_scared = newScaredTimes[newGhostPos.index(min_ghost_MH)] if newGhostPos else 0
+
+        # prevent divison by 0
+        if min_ghost_MH == 0:
+            return float('-inf')
+        if min_MH == 0:
+            return float('inf')
+
+        # if number of squares left as scared is greater than the distance
+        if is_scared > min_ghost_MH:
+            # take reciprocal because if distance is close, we want larger value
+            return successorGameState.getScore() + 1.0 / min_ghost_MH
+        else:
+            # if distance is far, we want smaller e(x)
+            return successorGameState.getScore() - 1.0 / min_ghost_MH + 1.0 / min_MH
+
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """

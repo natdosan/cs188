@@ -227,7 +227,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             # only called once for each action
             successor = gameState.generateSuccessor(agentIndex, action)
             v = max(v, self.min_value(successor, depth, agentIndex + 1, alpha, beta))
-            if v >= beta:
+            if v > beta:
                 return v
             alpha = max(alpha, v)
         return v
@@ -246,7 +246,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             successor = gameState.generateSuccessor(agentIndex, action)
             v = min(v, self.max_value(successor, depth + 1, 0, alpha, beta) 
                 if agentIndex == gameState.getNumAgents() - 1 else self.min_value(successor, depth, agentIndex + 1, alpha, beta))
-            if v <= alpha:
+            if v < alpha:
                 return v
             beta = min(beta, v)
         return v

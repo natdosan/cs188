@@ -214,13 +214,64 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
     Your minimax agent with alpha-beta pruning (question 3)
     """
+    def max_value(self, gameState, depth, agentIndex, alpha, beta):
+        """
+        Given a state, keeps iterating and increasing until the 
+        maximum value is found -> V(s) = max V(s’) for all s’ successors of s
+        """
+        if gameState.isWin() or gameState.isLose() or depth == self.depth:
+            return self.evaluationFunction(gameState)
+
+        v = float('-inf')
+        for action in gameState.getLegalActions(agentIndex):
+            # only called once for each action
+            successor = gameState.generateSuccessor(agentIndex, action)
+            v = max(v, self.min_value(successor, depth, agentIndex + 1, alpha, beta))
+            if v > beta:
+                return v
+            alpha = max(alpha, v)
+        return v
+
+    def min_value(self, gameState, depth, agentIndex, alpha, beta):
+        """
+        Given a state, keeps iterating and increasing until the 
+        minimum value is found -> V(s') = min V(s) for all s successors of s’
+        """
+        if gameState.isWin() or gameState.isLose() or depth == self.depth:
+            return self.evaluationFunction(gameState)
+            
+        v = float('inf')
+        for action in gameState.getLegalActions(agentIndex):
+            # only called once for each action
+            successor = gameState.generateSuccessor(agentIndex, action)
+            v = min(v, self.max_value(successor, depth + 1, 0, alpha, beta) if agentIndex == gameState.getNumAgents() - 1 else self.min_value(successor, depth, agentIndex + 1, alpha, beta))
+            if v < alpha:
+                return v
+            beta = min(beta, v)
+        return v
 
     def getAction(self, gameState: GameState):
         """
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        alpha = float('-inf')
+        beta = float('inf')
+        pacmans_actions = gameState.getLegalActions(0)
+        v = float('-inf')
+        best_action = Directions.STOP
+
+        for action in pacmans_actions:
+            # only called once for each action
+            successor = gameState.generateSuccessor(0, action)
+            temp = self.min_value(successor, 0, 1, alpha, beta)
+            if temp > v:
+                v = temp
+                best_action = action
+            if v > beta:
+                return action
+            alpha = max(alpha, v)
+        return best_action
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """

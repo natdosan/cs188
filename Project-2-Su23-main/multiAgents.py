@@ -281,6 +281,47 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
     """
+    def max_value(self, gameState, depth):
+            """
+            Given a state, keeps iterating and increasing until the 
+            maximum value is found -> V(s) = max V(s’) for all s’ successors of s
+            """
+            if gameState.isWin() or gameState.isLose() or depth == self.depth:
+                return self.evaluationFunction(gameState)
+
+            v = float('-inf')
+            for action in gameState.getLegalActions(0):
+                successor = gameState.generateSuccessor(0, action)
+                v = max(v, self.expectimax(successor, depth, 1)) 
+            return v
+
+    def expectimax(self, gameState, depth, agentIndex):
+        """
+        Given a state, calculates the expectimax values
+        """
+        # same base case as before
+        if gameState.isWin() or gameState.isLose() or depth == self.depth:
+            return self.evaluationFunction(gameState)
+
+        v = 0
+        actions = gameState.getLegalActions(agentIndex)
+        utility_weight = 1.0 / len(actions) # uniform distribution probability
+        nextDepth = 0
+        for action in actions:
+            successor = gameState.generateSuccessor(agentIndex, action)
+            # if the current agent is not the last ghost
+            if agentIndex < gameState.getNumAgents() - 1:
+                nextAgent = agentIndex + 1
+            # otherwise it is pacman
+            else:
+                nextAgent = 0
+            # if next agent is a ghost, depth is the same
+            # otherwise all ghosts have moved, and we go deeper by 1
+            nextDepth = depth if nextAgent else depth + 1
+            v += utility_weight * (self.max_value(successor, nextDepth) 
+                            if nextAgent == 0 
+                            else self.expectimax(successor, nextDepth, nextAgent))
+        return v
 
     def getAction(self, gameState: GameState):
         """
@@ -290,14 +331,21 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        pacmans_actions = gameState.getLegalActions(0)
+        v = float('-inf')
+        best_action = Directions.STOP
+
+        return max(pacmans_actions, key = lambda action: 
+                self.expectimax(gameState.generateSuccessor(0, action), 0, 1))
 
 def betterEvaluationFunction(currentGameState: GameState):
     """
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: A better evaluation function is one that works for reflex agents,
+                not just adversarial search agents.
     """
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()

@@ -345,10 +345,35 @@ def betterEvaluationFunction(currentGameState: GameState):
     evaluation function (question 5).
 
     DESCRIPTION: A better evaluation function is one that works for reflex agents,
-                not just adversarial search agents.
+                not just adversarial search agents. In this context, we want pacman
+                to perceive how the world could be. Thus this function takes into 
+                account how many ghosts are alive/how many are scared, how much 
+                food is left, as well as the distances to each. Then it returns a 
+                score given the current gamestate
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    newPos = currentGameState.getPacmanPosition()
+    newFood = currentGameState.getFood()
+    newGhostStates = currentGameState.getGhostStates()
+    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+
+    # MH to the nearest food
+    foodDistances = [manhattanDistance(newPos, food) for food in newFood.asList()]
+    nearestFoodDist = min(foodDistances) if foodDistances else 0
+
+    # MH to the nearest ghost
+    ghostDistances = [manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates]
+    nearestGhostDist = min(ghostDistances) if ghostDistances else 0
+
+    # is Pacman able to eat a ghost? if yes, pos factor else neg
+    if newScaredTimes and min(newScaredTimes) > nearestGhostDist:
+        ghostFactor = 200
+    else:
+        ghostFactor = -200
+
+    # Return an evaluation of the current state
+    return currentGameState.getScore() + (1.0 / (nearestFoodDist + 1)) 
+    + ghostFactor * (1.0 / (nearestGhostDist + 1))
 
 # Abbreviation
 better = betterEvaluationFunction

@@ -382,13 +382,16 @@ def betterEvaluationFunction(currentGameState: GameState):
         # local min
         localClosestFoodDist = min([manhattanDistance(currPos, foodPos) 
             for foodPos in currFood.asList()])
+        # reciprocal of closest food distance
         foodScore = 1 / localClosestFoodDist
     
-    # get the global min
+    # get the global min by using manhattan distance to find the closest ghost distance
     globalClosestGhostDist = min([manhattanDistance(currPos, 
         ghostState.configuration.pos) for ghostState in currGhostStates])
+    # Sanity check when no ghost exist
     if globalClosestGhostDist == 0:
         ghostScore = 0
+    # reciprocal in the final evaluation function
     else:
         ghostScore = 2 / globalClosestGhostDist
     return currentGameState.getScore() + foodScore - ghostScore + sum(ScaredTimes)

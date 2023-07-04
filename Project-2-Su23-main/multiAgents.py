@@ -368,28 +368,30 @@ def betterEvaluationFunction(currentGameState: GameState):
                 score given the current gamestate
     """
     "*** YOUR CODE HERE ***"
-    newPos = currentGameState.getPacmanPosition()
-    newFood = currentGameState.getFood()
-    newGhostStates = currentGameState.getGhostStates()
-    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+    # current agent pos, food pos, ghost states, scared times
+    currPos = currentGameState.getPacmanPosition()
+    currFood = currentGameState.getFood()
+    currGhostStates = currentGameState.getGhostStates()
+    ScaredTimes = [ghostState.scaredTimer for ghostState in currGhostStates]
 
-    # MH to the nearest food
-    foodDistances = [manhattanDistance(newPos, food) for food in newFood.asList()]
-    nearestFoodDist = min(foodDistances) if foodDistances else 0
-
-    # MH to the nearest ghost
-    ghostDistances = [manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates]
-    nearestGhostDist = min(ghostDistances) if ghostDistances else 0
-
-    # is Pacman able to eat a ghost? if yes, pos factor else neg
-    if newScaredTimes and min(newScaredTimes) > nearestGhostDist:
-        ghostFactor = 200
+    # if no food
+    if len(currFood.asList()) == 0:
+        foodScore = 0
+    # food score is the reciprocal of how near the food is
     else:
-        ghostFactor = -200
-
-    # Return an evaluation of the current state
-    return currentGameState.getScore() + (1.0 / (nearestFoodDist + 1)) 
-    + ghostFactor * (1.0 / (nearestGhostDist + 1))
+        # local min
+        localClosestFoodDist = min([manhattanDistance(currPos, foodPos) 
+            for foodPos in currFood.asList()])
+        foodScore = 1 / localClosestFoodDist
+    
+    # get the global min
+    globalClosestGhostDist = min([manhattanDistance(currPos, 
+        ghostState.configuration.pos) for ghostState in currGhostStates])
+    if globalClosestGhostDist == 0:
+        ghostScore = 0
+    else:
+        ghostScore = 2 / globalClosestGhostDist
+    return currentGameState.getScore() + foodScore - ghostScore + sum(ScaredTimes)
 
 # Abbreviation
 better = betterEvaluationFunction

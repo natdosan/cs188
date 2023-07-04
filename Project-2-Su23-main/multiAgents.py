@@ -83,13 +83,16 @@ class ReflexAgent(Agent):
 
         # manhattan dist to closest food, ghost
         #distance_over_food = manhattanDistance(newPos, successorGameState) / newFood
+        # use manhattan distance to find the closest food distance
         if newFood:
             min_MH = min(manhattanDistance(newPos, food) for food in newFood)
+        # Sanity check in case no more food 
         else:
-            min_MH = 0  # No food left
+            min_MH = 0 
         min_ghost_MH = min(newGhostPos) if newGhostPos else float('inf')
 
         is_scared = 0
+        # check if ghost is scared
         if newGhostPos:
             is_scared = newScaredTimes[newGhostPos.index(min_ghost_MH)] 
         else:
@@ -101,7 +104,7 @@ class ReflexAgent(Agent):
         if min_MH == 0:
             return float('inf')
 
-        # if number of squares left as scared is greater than the distance
+        # if number of ghosts left as scared is greater than the distance
         if is_scared > min_ghost_MH:
             # take reciprocal because if distance is close, we want larger value
             return successorGameState.getScore() + 1.0 / min_ghost_MH
@@ -156,8 +159,11 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
         # same as lecture pseudo code
         v = float('-inf')
+        # iterate through all possible actions to find the max
         for action in gameState.getLegalActions(agentIndex):
+            # extract the successor of the current game state
             successor = gameState.generateSuccessor(agentIndex, action)
+            # update max value when necessary
             v = max(v, self.min_value(successor, depth, agentIndex + 1))
         return v
 
@@ -172,8 +178,11 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
         # same as lecture pseudo code
         v = float('inf')
+        # iterate through all possible actions to find the min
         for action in gameState.getLegalActions(agentIndex):
+            # extract the successor of the current game state
             successor = gameState.generateSuccessor(agentIndex, action)
+            # update min value when necessary
             v = min(v, self.max_value(successor, depth + 1, 0) 
                 if agentIndex == gameState.getNumAgents() - 1 
                 else self.min_value(successor, depth, agentIndex + 1))
@@ -214,7 +223,9 @@ class MinimaxAgent(MultiAgentSearchAgent):
         if is_winning_state or is_losing_state:
             return self.evaluationFunction(gameState)
 
+        # get all of pacmans curr actions
         pacmans_actions = gameState.getLegalActions(0)
+        # maximize pacman's utility
         return max(pacmans_actions, key=lambda action: 
                 self.min_value(gameState.generateSuccessor(0, action), 0, 1))
 
@@ -235,8 +246,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
         # same as lecture pseudo code
         v = float('-inf')
+        # iterate through all possible actions to find the max
         for action in gameState.getLegalActions(agentIndex):
-            # only called once for each action
+            # extract the successor of the current gamestate
             successor = gameState.generateSuccessor(agentIndex, action)
             v = max(v, self.min_value(successor, depth, agentIndex + 1, alpha, beta))
             if v > beta:
@@ -255,8 +267,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
         # same as lecture pseudo code
         v = float('inf')
+        # iterate through all possible actions to find the min
         for action in gameState.getLegalActions(agentIndex):
-            # only called once for each action
+            # extract the successor of the current gamestate
             successor = gameState.generateSuccessor(agentIndex, action)
             v = min(v, self.max_value(successor, depth + 1, 0, alpha, beta) 
                 if agentIndex == gameState.getNumAgents() - 1 else self.min_value(successor, depth, agentIndex + 1, alpha, beta))
@@ -306,7 +319,9 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
         # same as lecture pseudo code
         v = float('-inf')
+        # iterate through all possible actions to find the maxz
         for action in gameState.getLegalActions(0):
+            # extract the successor of the current gamestate
             successor = gameState.generateSuccessor(0, action)
             v = max(v, self.expectimax(successor, depth, 1)) 
         return v
@@ -323,7 +338,10 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         actions = gameState.getLegalActions(agentIndex)
         utility_weight = 1.0 / len(actions) # uniform distribution probability
         nextDepth = 0
+
+        # iterate through all possible actions to find the expected value
         for action in actions:
+            # extract the successor of the current gamestate
             successor = gameState.generateSuccessor(agentIndex, action)
             # if the current agent is not the last ghost
             if agentIndex < gameState.getNumAgents() - 1:

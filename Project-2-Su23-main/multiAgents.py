@@ -150,9 +150,11 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Given a state, keeps iterating and increasing until the 
         maximum value is found -> V(s) = max V(s’) for all s’ successors of s
         """
+        # base case
         if gameState.isWin() or gameState.isLose() or depth == self.depth:
             return self.evaluationFunction(gameState)
 
+        # same as lecture pseudo code
         v = float('-inf')
         for action in gameState.getLegalActions(agentIndex):
             successor = gameState.generateSuccessor(agentIndex, action)
@@ -164,13 +166,17 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Given a state, keeps iterating and increasing until the 
         minimum value is found -> V(s') = min V(s) for all s successors of s’
         """
+        # base case
         if gameState.isWin() or gameState.isLose() or depth == self.depth:
             return self.evaluationFunction(gameState)
-            
+
+        # same as lecture pseudo code
         v = float('inf')
         for action in gameState.getLegalActions(agentIndex):
             successor = gameState.generateSuccessor(agentIndex, action)
-            v = min(v, self.max_value(successor, depth + 1, 0) if agentIndex == gameState.getNumAgents() - 1 else self.min_value(successor, depth, agentIndex + 1))
+            v = min(v, self.max_value(successor, depth + 1, 0) 
+                if agentIndex == gameState.getNumAgents() - 1 
+                else self.min_value(successor, depth, agentIndex + 1))
         return v
 
     def getAction(self, gameState: GameState):
@@ -223,9 +229,11 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Given a state, keeps iterating and increasing until the 
         maximum value is found -> V(s) = max V(s’) for all s’ successors of s
         """
+        # base case
         if gameState.isWin() or gameState.isLose() or depth == self.depth:
             return self.evaluationFunction(gameState)
 
+        # same as lecture pseudo code
         v = float('-inf')
         for action in gameState.getLegalActions(agentIndex):
             # only called once for each action
@@ -241,9 +249,11 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Given a state, keeps iterating and increasing until the 
         minimum value is found -> V(s') = min V(s) for all s successors of s’
         """
+        # base case
         if gameState.isWin() or gameState.isLose() or depth == self.depth:
             return self.evaluationFunction(gameState)
-            
+
+        # same as lecture pseudo code
         v = float('inf')
         for action in gameState.getLegalActions(agentIndex):
             # only called once for each action
@@ -290,9 +300,11 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         Given a state, keeps iterating and increasing until the 
         maximum value is found -> V(s) = max V(s’) for all s’ successors of s
         """
+        # base case
         if gameState.isWin() or gameState.isLose() or depth == self.depth:
             return self.evaluationFunction(gameState)
 
+        # same as lecture pseudo code
         v = float('-inf')
         for action in gameState.getLegalActions(0):
             successor = gameState.generateSuccessor(0, action)

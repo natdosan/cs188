@@ -89,7 +89,11 @@ class ReflexAgent(Agent):
             min_MH = 0  # No food left
         min_ghost_MH = min(newGhostPos) if newGhostPos else float('inf')
 
-        is_scared = newScaredTimes[newGhostPos.index(min_ghost_MH)] if newGhostPos else 0
+        is_scared = 0
+        if newGhostPos:
+            is_scared = newScaredTimes[newGhostPos.index(min_ghost_MH)] 
+        else:
+            is_scared = 0
 
         # prevent divison by 0
         if min_ghost_MH == 0:
@@ -282,18 +286,18 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
       Your expectimax agent (question 4)
     """
     def max_value(self, gameState, depth):
-            """
-            Given a state, keeps iterating and increasing until the 
-            maximum value is found -> V(s) = max V(s’) for all s’ successors of s
-            """
-            if gameState.isWin() or gameState.isLose() or depth == self.depth:
-                return self.evaluationFunction(gameState)
+        """
+        Given a state, keeps iterating and increasing until the 
+        maximum value is found -> V(s) = max V(s’) for all s’ successors of s
+        """
+        if gameState.isWin() or gameState.isLose() or depth == self.depth:
+            return self.evaluationFunction(gameState)
 
-            v = float('-inf')
-            for action in gameState.getLegalActions(0):
-                successor = gameState.generateSuccessor(0, action)
-                v = max(v, self.expectimax(successor, depth, 1)) 
-            return v
+        v = float('-inf')
+        for action in gameState.getLegalActions(0):
+            successor = gameState.generateSuccessor(0, action)
+            v = max(v, self.expectimax(successor, depth, 1)) 
+        return v
 
     def expectimax(self, gameState, depth, agentIndex):
         """

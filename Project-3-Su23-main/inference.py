@@ -56,12 +56,26 @@ def constructBayesNet(gameState: hunters.GameState):
     Y_RANGE = gameState.getWalls().height
     MAX_NOISE = 7
 
-    variables = []
-    edges = []
-    variableDomainsDict = {}
-
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    # list of tuples possible positions on the grid
+    possible_positions = [(x, y) for x in range(X_RANGE) 
+                                 for y in range(Y_RANGE)]
+
+    # list of intergers of possible observed distances in range of Manhattan Distance - 2 + Max Noise
+    possible_distances = list(range(X_RANGE + Y_RANGE + MAX_NOISE - 1))
+
+    # add variables
+    variables = [PAC, GHOST0, GHOST1, OBS0, OBS1]
+    variableDomainsDict = {
+        PAC: possible_positions,
+        GHOST0: possible_positions,
+        GHOST1: possible_positions,
+        OBS0: possible_distances,
+        OBS1: possible_distances,
+    }
+
+    # construct directed edges
+    edges = [(PAC, OBS0), (GHOST0, OBS0), (PAC, OBS1), (GHOST1, OBS1)]
     "*** END YOUR CODE HERE ***"
 
     net = bn.constructEmptyBayesNet(variables, edges, variableDomainsDict)

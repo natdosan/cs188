@@ -61,29 +61,23 @@ def constructBayesNet(gameState: hunters.GameState):
     variableDomainsDict = {}
 
     "*** YOUR CODE HERE ***"
-    # list of tuples possible positions on the grid
-    possible_positions = [(x, y) for x in range(X_RANGE) 
-                                 for y in range(Y_RANGE)]
-
-    # list of intergers of possible observed distances in range of Manhattan Distance - 2 + Max Noise
-    possible_distances = list(range(X_RANGE + Y_RANGE + MAX_NOISE - 1))
-
-    # add variables
+    # Constructing Bayes' nets: variables list
     variables += [PAC, GHOST0, GHOST1, OBS0, OBS1]
-    # construct directed edges
-    edges.append((PAC, OBS0))
+
+    # Constructing Bayes' nets, edge list: (x, y) means edge from x to y
     edges.append((GHOST0, OBS0))
+    edges.append((PAC, OBS0))
     edges.append((PAC, OBS1))
     edges.append((GHOST1, OBS1))
 
-    # assignments
-    variableDomainsDict = {
-        PAC: possible_positions.copy(),
-        GHOST0: possible_positions.copy(),
-        GHOST1: possible_positions.copy(),
-        OBS0: possible_distances.copy(),
-        OBS1: possible_distances.copy(),
-    }
+    # Construct the domain for each variable (a list like)
+    agent_domain = [(x,y) for x in range(X_RANGE) for y in range(Y_RANGE)]
+    obj_domain = [x for x in range(X_RANGE + Y_RANGE + MAX_NOISE - 1)]
+    variableDomainsDict[PAC]  = agent_domain.copy()
+    variableDomainsDict[GHOST0] = agent_domain.copy()
+    variableDomainsDict[GHOST1]  = agent_domain.copy()
+    variableDomainsDict[OBS0]  = obj_domain.copy()
+    variableDomainsDict[OBS1]  = obj_domain.copy()
     "*** END YOUR CODE HERE ***"
 
     net = bn.constructEmptyBayesNet(variables, edges, variableDomainsDict)

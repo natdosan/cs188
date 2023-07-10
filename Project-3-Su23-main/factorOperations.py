@@ -126,7 +126,7 @@ def joinFactors(factors: List[Factor]):
         prob = 1
         for factor in factors:
             # product of the corresponding rows of the input Factors.
-            prob = prob * factor.getProbability(assignment)
+            prob *= factor.getProbability(assignment)
         result.setProbability(assignment, prob)
     return result
     "*** END YOUR CODE HERE ***"
@@ -179,7 +179,24 @@ def eliminateWithCallTracking(callTrackingList=None):
                     "unconditionedVariables: " + str(factor.unconditionedVariables()))
 
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        unconditioned_var = [x for x in factor.unconditionedVariables() 
+            if x != eliminationVariable]
+        conditioned_var = factor.conditionedVariables()
+        variableDomainsDict = factor.variableDomainsDict()
+        sum_region = variableDomainsDict[eliminationVariable]
+        # Initialize the new factor returned
+        result = Factor(unconditioned_var, conditioned_var, variableDomainsDict)
+        assignment_dicts = result.getAllPossibleAssignmentDicts()
+        # Compute the new probabilities
+        for assignment in assignment_dicts:
+            # Initialize the resulting probability
+            prob = 0
+            for eli_var_val in sum_region:
+                # sum over the variable to be eliminated
+                assignment[eliminationVariable] = eli_var_val
+                prob += factor.getProbability(assignment)
+            result.setProbability(assignment, prob)
+        return result
         "*** END YOUR CODE HERE ***"
 
     return eliminate

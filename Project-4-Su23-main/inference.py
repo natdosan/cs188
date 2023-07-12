@@ -351,7 +351,11 @@ class DiscreteDistribution(dict):
         {}
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        if self.total() != 0:
+            for key_inplace in self.keys():
+                self[key_inplace] /= self.total()
+        else:
+            return None
         "*** END YOUR CODE HERE ***"
 
     def sample(self):
@@ -376,7 +380,14 @@ class DiscreteDistribution(dict):
         0.0
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # pseudocode from Linyuan Gong
+        r = random.random()
+        total = 0
+        for key, value in self.items():
+            #print(key, value) a, 1
+            total += value
+            if total >= r:
+                return key
         "*** END YOUR CODE HERE ***"
 
 

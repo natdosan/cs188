@@ -351,11 +351,15 @@ class DiscreteDistribution(dict):
         {}
         """
         "*** YOUR CODE HERE ***"
+        # In case the distribution is empty
         if len(self) == 0:
             return
+        # In case all values are zero
         if sum(self.values()) == 0:
             return
+        # Obtain the total probability to normalize
         total = self.total() * 1.0
+        # Normalize each component
         for key in self.keys():
             self[key] = self[key] / total
         "*** END YOUR CODE HERE ***"
@@ -382,11 +386,14 @@ class DiscreteDistribution(dict):
         0.0
         """
         "*** YOUR CODE HERE ***"
+        # Generate a random number between 0 and 1
         random_num = random.random()
         prob = 0.0
         sum = self.total() * 1.0
+        # Keep track of the cumulative probability
         for key in self.keys():
             prob += self[key] / sum
+            # Return when the threshold is reached
             if prob > random_num:
                 return key
         "*** END YOUR CODE HERE ***"
@@ -467,10 +474,12 @@ class InferenceModule:
         if ghostPosition == jailPosition:
             if noisyDistance == None:
                 return 1.0
+            # No possible in every other cases
             return 0.0
-        # observation is None, ghost is not in jail
+        # observation is None, ghost is not in jail is not possible
         if noisyDistance == None:
             return 0.0
+        # Obtain the true distance -- manhattan distance
         manhattan_dist = manhattanDistance(pacmanPosition, ghostPosition)
         # Use the provided getObservationProbability function
         evidence_prob = busters.getObservationProbability(noisyDistance, manhattan_dist)

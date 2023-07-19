@@ -465,21 +465,16 @@ class InferenceModule:
         "*** YOUR CODE HERE ***"
         # If the ghost is in jail, handle special case
         if ghostPosition == jailPosition:
-            # always happens
             if noisyDistance == None:
-                return 1
-            else:
-                return 0
-
-        # observation is None, ghost is not in jail
-        elif noisyDistance is None:
-            # not possible
+                return 1.0
             return 0.0
-
-        else:
-            trueDistance = manhattanDistance(pacmanPosition, ghostPosition)
-            # Use the provided getObservationProbability function
-            return busters.getObservationProbability(noisyDistance, trueDistance)
+        # observation is None, ghost is not in jail
+        if noisyDistance == None:
+            return 0.0
+        manhattan_dist = manhattanDistance(pacmanPosition, ghostPosition)
+        # Use the provided getObservationProbability function
+        evidence_prob = busters.getObservationProbability(noisyDistance, manhattan_dist)
+        return evidence_prob
         "*** END YOUR CODE HERE ***"
 
     def setGhostPosition(self, gameState, ghostPosition, index):

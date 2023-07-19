@@ -201,6 +201,7 @@ def eliminateWithCallTracking(callTrackingList=None):
         for assignment in assignment_dicts:
             # Initialize the resulting probability
             prob = 0
+            # marginalize over the variable
             for eli_var_val in sum_region:
                 # sum over the variable to be eliminated
                 assignment[eliminationVariable] = eli_var_val

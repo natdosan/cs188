@@ -744,7 +744,9 @@ class ParticleFilter(InferenceModule):
             beliefs.normalize()
             # Reassign distribution back to object
             self.beliefs = beliefs
-            # Iterate over all particles to resample and record sampling result 
+            # Iterate over all particles to resample and record sampling result
+            # Weird len(self.particles) and self.numParticles are not 
+            # giving the same number sometimes
             for i in range(len(self.particles)):
                 resample = beliefs.sample()
                 self.particles[i] = resample

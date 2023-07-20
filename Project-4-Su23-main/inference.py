@@ -761,8 +761,6 @@ class ParticleFilter(InferenceModule):
         """
         "*** YOUR CODE HERE ***"
         # Create a new DiscreteDistribution object to store the updated belief distribution
-        # We cannot update the original belief distribution directly because 
-        # every step of our iteration may depend on certain parts of the original belief distribution
         new_belief = DiscreteDistribution()
         # Obtain all the positions to iterate through/update belief
         particles = self.particles

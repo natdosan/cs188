@@ -646,7 +646,17 @@ class ParticleFilter(InferenceModule):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # Get variables for later use
+        legal_positions = self.legalPositions
+        num_particles = self.numParticles
+        # Compute the number of particles for each position
+        # We take integer division to satisfy "uniform" requirement
+        particle_per_position = num_particles // len(legal_positions)
+        # Iterate over all possible legal positions and add to the particles
+        for position in legal_positions:
+            # Repeatedly add until the threshold is reached
+            for i in range(particle_per_position):
+                self.particles.append(position)
         "*** END YOUR CODE HERE ***"
 
     def getBeliefDistribution(self):
@@ -658,7 +668,18 @@ class ParticleFilter(InferenceModule):
         This function should return a normalized distribution.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # Initialize a new belief distribution to work with
+        beliefs = DiscreteDistribution()
+        # Iterate over all particles and update beliefs
+        for particle in self.particles:
+            if particle not in beliefs:
+                beliefs[particle] = 1
+            else:
+                beliefs[particle] += 1
+        # Normalize beliefs as needed
+        beliefs.normalize()
+        # Obtain the belief distribution
+        return beliefs
         "*** END YOUR CODE HERE ***"
     
     ########### ########### ###########
@@ -678,7 +699,28 @@ class ParticleFilter(InferenceModule):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # Obtain basic variables to use
+        pacman_position = gameState.getPacmanPosition()
+        jail_position = self.getJailPosition()
+        # Initialize a new belief distribution to work with
+        beliefs = DiscreteDistribution()
+        # Iterate over all particles and update belief distribution accordingly
+        for particle in self.particles:
+            prob = self.getObservationProb(observation, pacman_position, 
+                particle, jail_position)
+            beliefs[particle] += prob
+        # Special case when all particles receive zero weight
+        if beliefs.total() == 0:
+            self.initializeUniformly(gameState)
+        else:
+            # Normalize distribution as needed
+            beliefs.normalize()
+            # Reassign distribution back to object
+            self.beliefs = beliefs
+            # Iterate over all particles to resample and record sampling result 
+            for i in range(len(self.particles)):
+                resample = beliefs.sample()
+                self.particles[i] = resample
         "*** END YOUR CODE HERE ***"
     
     ########### ########### ###########
@@ -691,5 +733,24 @@ class ParticleFilter(InferenceModule):
         gameState.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # Create a new DiscreteDistribution object to store the updated belief distribution
+        # We cannot update the original belief distribution directly because 
+        # every step of our iteration may depend on certain parts of the original belief distribution
+        new_belief = DiscreteDistribution()
+        # Obtain all the positions to iterate through/update belief
+        particles = self.particles
+        # Iterate through all particles and resample accordingly
+        for i in range(len(particles)):
+            # Resample directly if a distribution is readily usable
+            if particles[i] in new_belief:
+                particles[i] = new_belief[particles[i]].sample()
+            else:
+                # Obtain the transition model based on the old particle position
+                newPosDist = self.getPositionDistribution(gameState, particles[i])
+                # Assign the new belief distribution
+                new_belief[particles[i]] = newPosDist
+                # Sample once
+                particles[i] = newPosDist.sample()
+        # Reassign the sampled particles back to self.particles
+        self.particles = particles
         "*** END YOUR CODE HERE ***"

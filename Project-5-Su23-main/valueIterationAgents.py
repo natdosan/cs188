@@ -66,7 +66,9 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
         # Perform value iteration
         for _ in range(self.iterations):
+            # need this temp var to calculate the max_value for each state
             values_copy = self.values.copy()
+            # for each state
             for state in self.mdp.getStates():
                 # if we are at terminal state, don't assign 0, just continue
                 if self.mdp.isTerminal(state):
@@ -75,9 +77,9 @@ class ValueIterationAgent(ValueEstimationAgent):
                 # for every action, compute Q(s, a, s')
                 for action in self.mdp.getPossibleActions(state):
                     q_values.append(self.computeQValueFromValues(state, action))
-                # then take max_action
-                max_action = max(q_values)
-                values_copy[state] = max_action
+                # V_k+1
+                max_value = max(q_values)
+                values_copy[state] = max_value
             self.values = values_copy
 
     def getValue(self, state):

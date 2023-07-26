@@ -4,7 +4,7 @@
 
 ### UC Berkeley - Intro to Artificial Intelligence, Summer 2023
 
-- In this semester's offering, topics differed from previous offerings. Topics include:
+- In this semester's offering, topics differed from previous offerings (30% of the material was focused on ML and RL). Topics include:
 - Search (Graph, Tree, A*, Heuristics)
 - Constraint Satisfaction Problems
 - Games (MiniMax, Pruning, Adversarial Search)

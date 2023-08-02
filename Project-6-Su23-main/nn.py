@@ -218,7 +218,12 @@ class Linear(FunctionNode):
     def _backward(gradient, *inputs):
         assert gradient.shape[0] == inputs[0].shape[0]
         assert gradient.shape[1] == inputs[1].shape[1]
-        "*** YOUR CODE HERE (Q2) ***"
+        
+        # backward pass: dL/dX & dL/dW
+        dfeatures = np.dot(gradient, inputs[1].T)  
+        dweights = np.dot(inputs[0].T, gradient)  
+
+        return dfeatures, dweights
 
 class ReLU(FunctionNode):
     """
@@ -247,7 +252,12 @@ class ReLU(FunctionNode):
         - np.where: https://numpy.org/doc/stable/reference/generated/numpy.where.html
         """
         assert gradient.shape == inputs[0].shape
-        "*** YOUR CODE HERE (Q3) ***"
+        
+        # If the input is greater than 0, the derivative is 1
+        # If the input is less than or equal to 0, the derivative is 0
+        # thus no need for weights
+        dfeatures = gradient * np.where(inputs[0] > 0, 1.0, 0.0)
+        return dfeatures
 
 class SquareLoss(FunctionNode):
     """
@@ -278,7 +288,14 @@ class SquareLoss(FunctionNode):
     @staticmethod
     def _backward(gradient, *inputs):
         assert np.asarray(gradient).ndim == 0
-        "*** YOUR CODE HERE (Q4) ***"
+
+        # the number of elements in the input matrix
+        size = np.prod(inputs[0].shape)  
+        da = (inputs[0] - inputs[1]) / size  
+        db = (inputs[1] - inputs[0]) / size  
+
+        # multiply the upstream gradient with the local gradients
+        return (gradient * da, gradient * db)
 
 class SoftmaxLoss(FunctionNode):
     """
@@ -335,7 +352,15 @@ class SoftmaxLoss(FunctionNode):
     def _backward(gradient, *inputs):
         assert np.asarray(gradient).ndim == 0
         log_probs = SoftmaxLoss.log_softmax(inputs[0])  # may be helpful
-        "*** YOUR CODE HERE (Q5) ***"
+            
+        # softmax of the logits
+        probs = np.exp(log_probs)
+
+        # dLoss/dLogits
+        grad_logits = probs - inputs[1]
+
+        # multiply the upstream gradient with the current iteration gradients
+        return (gradient * grad_logits, None)
 
 def gradients(loss, parameters):
     """

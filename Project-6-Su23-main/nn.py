@@ -352,15 +352,15 @@ class SoftmaxLoss(FunctionNode):
     def _backward(gradient, *inputs):
         assert np.asarray(gradient).ndim == 0
         log_probs = SoftmaxLoss.log_softmax(inputs[0])  # may be helpful
-            
-        # softmax of the logits
-        probs = np.exp(log_probs)
-
+        softmax_probs = np.exp(log_probs)
+    
         # dLoss/dLogits
-        grad_logits = probs - inputs[1]
-
-        # multiply the upstream gradient with the current iteration gradients
-        return (gradient * grad_logits, None)
+        dl_dx = (softmax_probs - inputs[1]) / inputs[0].shape[0]
+        dl_dy = -log_probs / inputs[0].shape[0]
+        
+        # Multiply the upstream gradient with the local gradients
+        return gradient * dl_dx, gradient * dl_dy
+        
 
 def gradients(loss, parameters):
     """

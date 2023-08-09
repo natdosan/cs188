@@ -13,10 +13,11 @@ In this semester's offering, topics differed from previous offerings (30% of the
 - Games                                       (MiniMax, Pruning, Adversarial Search)
 - Bayesian Networks                           (Variable Elimination, Probabilistic Inference, Rejection, Gibbs, MCMC, Likelihood)
 - Hidden Markov Models                        (Particle Filtering, Inference, Smoothing, Prediction, Dynamic Bayes Nets)
-- Markov Decision Processes                   (Policies, Q-Values)
+- Markov Decision Processes                   (Policies, Q-Values, Value & Policy Iteration)
 - Reinforcement Learning                      (TD, Q-Learning, Policy Gradients)
 - Machine Learning                            (Perceptrons, Classification Methods, Regularization, Smoothing, MLE, Loss Functions)
 - Neural Networks                             (Architecture, Forward/Back-Propogation, Representation)
+- Optimization Methods                        (Stochastic, Mini-Batch, Newton's Method & 2nd Order, Momentum, Adaptive)
 
 ## Projects
 
@@ -31,3 +32,6 @@ In this semester's offering, topics differed from previous offerings (30% of the
 
 ### Project 5
 - Implemented value iteration, Q-Learning, Epsilon Greedy Exploration / Exploitation, and Approximate Q-Learning
+
+### Project 6
+- Implemented backpropogation, function approximation, and RNN using numpy

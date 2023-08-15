@@ -6,6 +6,8 @@
 
 My original work for this course can be found in this repository, and my original reference notes can be found [here](https://purrfect-zinc-f80.notion.site/CS-188-Notes-0db1181094744173ac5efdce49d563d9?pvs=4). 
 
+***For upholding academic integrity, do not use any solutions of the projects as your own. MOSS will be able to tell.***
+
 In this semester's offering, topics differed from previous offerings (30% of the material was focused on RL/ML/DL). Topics include:
 
 - Search                                      (Agents, State Spaces, Rationality, Graph, Tree, A*, Heuristics)
